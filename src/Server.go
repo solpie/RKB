@@ -10,7 +10,6 @@ import (
 func main() {
 	router := gin.Default()
 	router.Static("/static", "./static")
-
 	router.LoadHTMLGlob("./static/tmpl/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	//router.GET("/panel", func(c *gin.Context) {
