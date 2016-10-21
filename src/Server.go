@@ -3,7 +3,10 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"log"
 )
+//https://github.com/gorilla/websocket/blob/master/examples/echo/server.go
+
 func main() {
 	router := gin.Default()
 	router.Static("/static", "./static")
@@ -30,6 +33,7 @@ func main() {
 		//message := name
 		//c.String(http.StatusOK, message)
 	})
-
+	log.Println("run")
 	router.Run(":80")
+	//log.Println("run")
 }
