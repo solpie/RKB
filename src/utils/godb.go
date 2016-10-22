@@ -10,6 +10,7 @@ import (
 type GoDB struct {
 	Path    string
 	DataMap map[string]*jason.Object
+	//DataMap map[string]string
 }
 
 func (g *GoDB) Init(fileName string) {
@@ -19,17 +20,20 @@ func (g *GoDB) Init(fileName string) {
 		os.Exit(1)
 	}
 	g.DataMap = make(map[string]*jason.Object)
+	//g.DataMap = make(map[string]string)
 	r := bufio.NewReader(f)
 	line, e := Readln(r)
 	for e == nil {
 		//fmt.Println(line)
 		jsonObj, _ := jason.NewObjectFromBytes(line)
-		var _id, _ = jsonObj.GetString("id")
+		var _id, _ = jsonObj.GetString("_id")
 		g.DataMap[_id] = jsonObj
-		//fmt.Println(player.GetString("name"))
+		fmt.Println(_id)
 		line, e = Readln(r)
 	}
-	fmt.Println(g.DataMap["119"])
+	//fmt.Println(jason.NewObjectFromBytes([]byte(g.DataMap["16"])))
+	//fmt.Println(g.DataMap["16"])
+	//fmt.Println(g.DataMap["vvkY3YuHXMqfVihi"])
 }
 
 func Readln(r *bufio.Reader) ([]byte, error) {
