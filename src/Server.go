@@ -10,10 +10,13 @@ import (
 )
 
 func main() {
-	playerDb :=godb.New("./db/player.db")
-	fmt.Println(playerDb)
+	var playerDb = new(godb.GoDB)
+	playerDb.Init("./db/player.db")
 
-	router := gin.Default()
+	fmt.Println(playerDb.Path)
+	//fmt.Println(playerDb.DataMap["119"].GetString("name"))
+
+	var router = gin.Default()
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("./static/tmpl/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")

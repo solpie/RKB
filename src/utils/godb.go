@@ -8,29 +8,30 @@ import (
 )
 
 type GoDB struct {
-	path    string
-	dataMap map[string]jason.Object
+	Path    string
+	DataMap map[string]*jason.Object
 }
 
-func New(fileName string) *GoDB {
-	g := &GoDB{path:fileName, dataMap:make(map[string]jason.Object)}
-	fmt.Println(g.path)
-
+func (g *GoDB) Init(fileName string) {
 	f, err := os.Open(fileName)
 	if err != nil {
 		fmt.Println("error opening file= ", err)
 		os.Exit(1)
 	}
+	g.DataMap = make(map[string]*jason.Object)
 	r := bufio.NewReader(f)
 	line, e := Readln(r)
 	for e == nil {
 		//fmt.Println(line)
-		player, _ := jason.NewObjectFromBytes(line)
-		fmt.Println(player.GetString("name"))
+		jsonObj, _ := jason.NewObjectFromBytes(line)
+		var _id, _ = jsonObj.GetString("id")
+		g.DataMap[_id] = jsonObj
+		//fmt.Println(player.GetString("name"))
 		line, e = Readln(r)
 	}
-	return g
+	fmt.Println(g.DataMap["119"])
 }
+
 func Readln(r *bufio.Reader) ([]byte, error) {
 	var (
 		isPrefix bool = true
