@@ -21,8 +21,8 @@ _cgo_export.*
 
 _testmain.go
 /.idea
+/node_modules
 *.iml
 *.exe
 *.test
 *.prof
-

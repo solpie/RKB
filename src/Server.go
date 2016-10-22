@@ -2,16 +2,17 @@ package main
 
 import (
 	"net/http"
-	"log"
-	"io/ioutil"
-
 	"github.com/gin-gonic/gin"
-	"github.com/antonholmquist/jason"
 	"github.com/olahol/melody"
+	"utils"
+	"router"
+	"fmt"
 )
-//https://github.com/gorilla/websocket/blob/master/examples/echo/server.go
 
 func main() {
+	playerDb :=godb.New("./db/player.db")
+	fmt.Println(playerDb)
+
 	router := gin.Default()
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("./static/tmpl/*")
@@ -30,32 +31,17 @@ func main() {
 	router.GET("/panel/:name/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "panel.tmpl", gin.H{
 			"title": "Main website",
+			"wsPort": 6969,
 		})
 		//name := c.Param("name")
 		//message := name
 		//c.String(http.StatusOK, message)
 	})
+	hupuAPI.SetupRouter(router)
+
 	initWS(router)
-	httpTest(router)
+	//httpTest(router)
 	router.Run(":80")
-}
-func httpTest(r *gin.Engine) {
-	r.GET("/api/players/:round", func(c *gin.Context) {
-		round := c.Param("round")
-		response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/players/" + round)
-		defer response.Body.Close()
-		body, _ := ioutil.ReadAll(response.Body)
-
-		v, _ := jason.NewObjectFromBytes(body)
-		msg, _ := v.GetString("msg")
-		log.Println(msg)
-		playerArr, _ := v.GetObjectArray("data")
-		for i, player := range playerArr {
-			log.Printf("player %d: %s", i, player)
-		}
-		c.JSON(200, v)
-	})
-
 }
 func initWS(r *gin.Engine) {
 	m := melody.New()
