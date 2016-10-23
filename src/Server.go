@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/olahol/melody"
 	"router"
-	"godb"
+	"utils/godb"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-package godb
+package utils
 
 import (
 	"math/rand"

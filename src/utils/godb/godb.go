@@ -4,7 +4,8 @@ import (
 	. "fmt"
 	"os"
 	"bufio"
-	"jex"
+	"utils/jex"
+	"utils"
 )
 
 type GoDB struct {
@@ -41,29 +42,29 @@ func (g *GoDB)flush() {
 	}
 
 }
-func (g *GoDB)Insert(jex *jex.JsonEx) {
+func (g *GoDB)Insert(jo *jex.JsonEx) {
 	var _id = ""
 	// _id2,_:= jo.GetString("_id")
 	//if _id2!=nil{
 	//	_id = _id2
 	//}
-	_id = RandStringBytesMaskImprSrc(7)
+	_id = utils.RandStringBytesMaskImprSrc(7)
 	for {
 		if g._dataMap[_id] != nil {
 			Println("_id exist", _id)
-			_id = RandStringBytesMaskImprSrc(7)
+			_id = utils.RandStringBytesMaskImprSrc(7)
 		} else {
 			break
 		}
 	}
-	Println("new _id", _id)
-	jex.SetP(_id, "_id")
+	jo.SetP(_id, "_id")
 
+	Println("insert doc:", jo.String())
 	f, err := os.OpenFile(g._path, os.O_APPEND, 0666)
 	if err != nil {
 		Println("error Insert ", err)
 	}
-	f.WriteString(jex.String())
+	f.WriteString(jo.String())
 
 	defer f.Close()
 }
@@ -147,5 +148,6 @@ func Test() {
 	//jsonObj.Set(30, "outter", "inner2", "value3")
 
 	Println(jo.String())
+
 
 }

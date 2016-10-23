@@ -25,7 +25,6 @@ func (jex *JsonEx)SetP(value interface{}, path string) (*JsonEx, error) {
 func (jex *JsonEx)GetString(path string) string {
 	v, _ := jex.ctn.Path(path).Data().(string)
 	return v
-	//return jex.ctn.Path(path).Data().(string)
 }
 
 func (jex *JsonEx)GetNumber(path string) float64 {
