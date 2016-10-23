@@ -1,12 +1,11 @@
 package hupuAPI
 
 import (
-
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"io/ioutil"
-	"github.com/antonholmquist/jason"
 	"log"
+	"github.com/Jeffail/gabs"
 )
 
 func SetupRouter(r *gin.Engine) {
@@ -16,15 +15,13 @@ func SetupRouter(r *gin.Engine) {
 		defer response.Body.Close()
 		body, _ := ioutil.ReadAll(response.Body)
 
-		v, _ := jason.NewObjectFromBytes(body)
-		//msg, _ := v.GetString("msg")
-		//log.Println(msg)
-		playerArr, _ := v.GetObjectArray("data")
+		v, _ := gabs.ParseJSON(body)
+		playerArr, _ := v.S("data").Children()
 		for i, player := range playerArr {
-			playerName,_ := player.GetString("name")
-			log.Printf("player %d: %s", i, playerName)
+			playerName, _ := player.Path("name").Data().(string)
+			log.Printf("player %d: %s\n", i, playerName)
 		}
-		c.JSON(200, v)
+		c.JSON(200, v.Data())
 	})
 
 }

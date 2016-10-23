@@ -4,18 +4,13 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/olahol/melody"
-	"utils"
 	"router"
-	"fmt"
+	"godb"
 )
 
 func main() {
-	var playerDb = new(godb.GoDB)
-	playerDb.Init("./db/player.db")
-
-	fmt.Println(playerDb.Path)
-	//fmt.Println(playerDb.DataMap["119"].GetString("name"))
-
+	test()
+	//gin.SetMode(gin.ReleaseMode)
 	var router = gin.Default()
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("./static/tmpl/*")
@@ -45,6 +40,9 @@ func main() {
 	initWS(router)
 	//httpTest(router)
 	router.Run(":80")
+}
+func test() {
+	godb.Test()
 }
 func initWS(r *gin.Engine) {
 	m := melody.New()
