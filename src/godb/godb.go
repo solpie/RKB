@@ -4,13 +4,14 @@ import (
 	. "fmt"
 	"os"
 	"bufio"
-	"github.com/Jeffail/gabs"
+	"jex"
 )
 
 type GoDB struct {
 	_path    string
-	_dataMap map[string]*gabs.Container
+	_dataMap map[string]*jex.JsonEx
 }
+
 func (g *GoDB) Path() string {
 	return g._path
 }
@@ -40,7 +41,7 @@ func (g *GoDB)flush() {
 	}
 
 }
-func (g *GoDB)Insert(jo *gabs.Container) {
+func (g *GoDB)Insert(jex *jex.JsonEx) {
 	var _id = ""
 	// _id2,_:= jo.GetString("_id")
 	//if _id2!=nil{
@@ -56,17 +57,16 @@ func (g *GoDB)Insert(jo *gabs.Container) {
 		}
 	}
 	Println("new _id", _id)
-	jo.SetP(_id,"_id")
+	jex.SetP(_id, "_id")
 
 	f, err := os.OpenFile(g._path, os.O_APPEND, 0666)
 	if err != nil {
 		Println("error Insert ", err)
 	}
-	f.WriteString(jo.String())
+	f.WriteString(jex.String())
 
 	defer f.Close()
 }
-
 
 func (g *GoDB) Init(fileName string) {
 	f, err := os.OpenFile(fileName, os.O_CREATE, 0666)
@@ -76,7 +76,7 @@ func (g *GoDB) Init(fileName string) {
 	}
 	g._path = fileName
 
-	g._dataMap = make(map[string]*gabs.Container)
+	g._dataMap = make(map[string]*jex.JsonEx)
 	//g.DataMap = make(map[string]string)
 	r := bufio.NewReader(f)
 	line, e := readLine(r)
@@ -86,8 +86,8 @@ func (g *GoDB) Init(fileName string) {
 		//fmt.Println(line)
 
 		//jsonObj, _ := jason.NewObjectFromBytes(line)
-		jsonObj, _ := gabs.ParseJSON(line)
-		var _id, _ = jsonObj.Path("_id").Data().(string)
+		jsonObj := jex.Load(line)
+		var _id = jsonObj.GetString("_id")//Path("_id").Data().(string)
 		//var _id, _ = jsonObj.Path("_id").Data().(string)
 		//var _id, _ = jsonObj.GetString("_id")
 		//Println(_id)
@@ -123,7 +123,10 @@ func Test() {
 	//playerDb.Insert(nil)
 	Println(playerDb.Path())
 
-	jsonObj, _ := gabs.ParseJSON([]byte(`{
+	Println("test insert")
+
+	//jex :=jex.JsonEx{jsonObj}
+	var jo = jex.Load([]byte(`{
     "outter":{
         "inner":{
             "value1":10,
@@ -134,22 +137,15 @@ func Test() {
         }
     }
 }`))
-	Println("test insert")
-	newDb.Insert(jsonObj)
-
-
-	//var value float64
-	//var ok bool
-
-	var value, ok = jsonObj.Path("outter.inner.value1").Data().(float64)
-	Println(value, ok)
+	newDb.Insert(jo)
+	Println(jo.GetNumber("outter.inner.value1"))
 	//jsonObj := gabs.New()
 	// or gabs.Consume(jsonObject) to work on an existing map[string]interface{}
 
 	//jsonObj.Set(99, "outter", "inner", "value")
-	jsonObj.SetP(20, "outter.inner.value2")
+	jo.SetP(998, "outter.inner.value2")
 	//jsonObj.Set(30, "outter", "inner2", "value3")
 
-	Println(jsonObj.String())
+	Println(jo.String())
 
 }
