@@ -9,8 +9,15 @@ type JsonEx struct {
 	ctn *gabs.Container
 }
 
+type JsonEx2 gabs.Container
+func (jex *JsonEx2)Data() interface{} {
+	return jex.Data()
+}
+
 func (jex *JsonEx)Ctn(path string) *gabs.Container {
 	return jex.ctn
+}
+func (jex *JsonEx)Sort(key string)  {
 }
 func (jex *JsonEx)GetArray(path string) []*JsonEx {
 	var children, _ = jex.ctn.Path(path).Children()

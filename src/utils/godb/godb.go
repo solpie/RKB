@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"utils/jex"
 	"utils"
+	. "github.com/coryb/sorty"
 )
 
 type GoDB struct {
@@ -148,6 +149,21 @@ func Test() {
 	//jsonObj.Set(30, "outter", "inner2", "value3")
 
 	Println(jo.String())
+	utils.Test()
 
+	////test sort
+	s := NewSorter().ByKeys([]string{
+		"-bar",
+	})
 
+	data := []map[string]interface{}{
+		{"foo": "abc", "bar": 890},
+		{"foo": "xyz", "bar": 123},
+		{"foo": "def", "bar": 456},
+		{"foo": "mno", "bar": 789},
+		{"foo": "def", "bar": 789},
+	}
+
+	s.Sort(data)
+	Println(data)
 }

@@ -3,6 +3,8 @@ package utils
 import (
 	"math/rand"
 	"time"
+	"fmt"
+	"reflect"
 )
 
 /////////////////////  random string
@@ -33,3 +35,56 @@ func RandStringBytesMaskImprSrc(n int) string {
 	return string(b)
 }
 //////////////////
+type Arr struct {
+	//_arr []interface{}
+	elemType   reflect.Type
+	sliceValue reflect.Value
+}
+
+//func (arr *Arr)Push(item interface{}) interface{} {
+//	fmt.Println(len(arr._arr))
+//	var a = append(arr._arr, item)
+//	fmt.Println(len(arr._arr))
+//	return a
+//}
+func (self *Arr)Arr() interface{} {
+	return self.sliceValue.Interface()
+}
+func (self *Arr)New(sample interface{}) *Arr {
+	value := reflect.ValueOf(sample)
+	self.sliceValue = reflect.MakeSlice(value.Type(), 0, 0)
+	self.elemType = reflect.TypeOf(sample).Elem()
+	return  self
+}
+func (self *Arr) Push(e interface{}) bool {
+	if reflect.TypeOf(e) != self.elemType {
+		return false
+	}
+	self.sliceValue = reflect.Append(self.sliceValue, reflect.ValueOf(e))
+	return true
+}
+func (self *Arr) ElemType() reflect.Type {
+	return self.elemType
+}
+
+func NewArr() {
+
+}
+
+
+
+func Test() {
+	var a = Arr{}
+	a.New(make([]int,0))
+	a.Push(1)
+	a.Push(2)
+	inst:=a.Arr().([]int)
+
+	var numArr = []int{1,2}
+	numArr = append(numArr,3)
+	//Arr2(numArr).Push(3)
+
+	//inst:=([]int).(a.Arr())
+	fmt.Println("Arr Test():",inst)
+	fmt.Println("Arr2 Test():",numArr)
+}

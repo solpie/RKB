@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"utils/godb"
 )
 
-func main() {
+func InitServer() {
 	test()
 	//gin.SetMode(gin.ReleaseMode)
 	var router = gin.Default()
