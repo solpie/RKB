@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"log"
-	"github.com/Jeffail/gabs"
+	"utils/jex"
 )
 
 func SetupRouter(r *gin.Engine) {
@@ -15,13 +15,15 @@ func SetupRouter(r *gin.Engine) {
 		defer response.Body.Close()
 		body, _ := ioutil.ReadAll(response.Body)
 
-		v, _ := gabs.ParseJSON(body)
-		playerArr, _ := v.S("data").Children()
-		for i, player := range playerArr {
-			playerName, _ := player.Path("name").Data().(string)
-			log.Printf("player %d: %s\n", i, playerName)
+		var jo = jex.Load(body)
+		var playerArr = jo.GetArray("data")
+		for _, player := range playerArr {
+			var playerName = player.GetString("name")
+			var playerNum = player.GetString("playerNum")
+			log.Printf("player %s: %s\n", playerNum, playerName)
 		}
-		c.JSON(200, v.Data())
+
+		c.JSON(200, jo.Data())
 	})
 
 }

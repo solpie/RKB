@@ -12,9 +12,20 @@ type JsonEx struct {
 func (jex *JsonEx)Ctn(path string) *gabs.Container {
 	return jex.ctn
 }
+func (jex *JsonEx)GetArray(path string) []*JsonEx {
+	var children, _ = jex.ctn.Path(path).Children()
+	var a = make([]*JsonEx, len(children))
+	for i := 0; i < len(children); i++ {
+		a[i] = Load(children[i])//{array[i]}
+	}
+	return a
+}
 
 func (jex *JsonEx)String() string {
 	return jex.ctn.String()
+}
+func (jex *JsonEx)Data() interface{} {
+	return jex.ctn.Data()
 }
 
 func (jex *JsonEx)SetP(value interface{}, path string) (*JsonEx, error) {
