@@ -30,6 +30,10 @@ func (jex *JsonEx)GetArray(path string) []*JsonEx {
 func (jex *JsonEx)String() string {
 	return jex.ctn.String()
 }
+func (jex *JsonEx)B() []byte {
+	return jex.ctn.Bytes()
+}
+
 func (jex *JsonEx)Data() interface{} {
 	return jex.ctn.Data()
 }

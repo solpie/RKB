@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"model"
+	"utils/jex"
 )
 
 func SetupAdmin(r *gin.Engine) {
@@ -15,9 +16,6 @@ func SetupAdmin(r *gin.Engine) {
 }
 
 func playerEndpoint(c *gin.Context) {
-	model.Db().PlayerDb.Path()
-	//model.PlayerDb.Find()
-	//c.JSON(200, gin.H{
-	//	"PlayerMap":  model.PlayerDb.Find(),
-	//})
+	var jo = jex.Load([]byte(`{"PlayerArr":` + model.Db().PlayerDb.JsonArrString() + "}"))
+	c.JSON(200, jo.Data())
 }

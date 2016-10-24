@@ -42,13 +42,27 @@ func (g *GoDB)flush() {
 	}
 
 }
-func (g *GoDB)Find()map[string]*jex.JsonEx {
-	//g._dataMap[""]
-	//g._dataMap
-	//gabs
-
-
+func (g *GoDB)Find() map[string]*jex.JsonEx {
 	return g._dataMap;
+}
+func (g *GoDB)Map() map[string]*jex.JsonEx {
+	return g._dataMap;
+}
+func (g *GoDB)JsonArrString() string {
+	var jsonStr = "["
+	var m = g._dataMap
+	var isFirst = true;
+	for _, v := range m {
+		if isFirst {
+			isFirst = false
+			jsonStr += v.String()
+
+		} else {
+			jsonStr += "," + v.String()
+		}
+	}
+	jsonStr += "]"
+	return jsonStr;
 }
 func (g *GoDB)Update(jo *jex.JsonEx) {
 	//var _id = jo.GetString("_id")
