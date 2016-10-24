@@ -5,28 +5,28 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/olahol/melody"
 	"router"
-	"utils/godb"
 )
 
 func InitServer() {
-	test()
 	//gin.SetMode(gin.ReleaseMode)
-	var router = gin.Default()
-	router.Static("/static", "./static")
-	router.LoadHTMLGlob("./static/tmpl/*")
+	var ginEngine = gin.Default()
+	ginEngine.Static("/static", "./static")
+	ginEngine.LoadHTMLGlob("./static/tmpl/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 
 	// This handler will match /user/john but will not match neither /user/ or /user
-	router.GET("/", func(c *gin.Context) {
-		http.ServeFile(c.Writer, c.Request, "./static/websocket.html")
+	ginEngine.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/admin")
+		//http.ServeFile(c.Writer, c.Request, "./static/websocket.html")
 	})
 
-	router.GET("/admin/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		c.String(http.StatusOK, "Hello %s", name)
+	ginEngine.GET("/admin", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "admin.tmpl", gin.H{
+			"version": "0.4",
+		})
 	})
 
-	router.GET("/panel/:name/", func(c *gin.Context) {
+	ginEngine.GET("/panel/:name/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "panel.tmpl", gin.H{
 			"title": "Main website",
 			"wsPort": 6969,
@@ -35,14 +35,12 @@ func InitServer() {
 		//message := name
 		//c.String(http.StatusOK, message)
 	})
-	hupuAPI.SetupRouter(router)
+	router.SetupHupuAPI(ginEngine)
+	router.SetupAdmin(ginEngine)
 
-	initWS(router)
+	initWS(ginEngine)
 	//httpTest(router)
-	router.Run(":80")
-}
-func test() {
-	godb.Test()
+	ginEngine.Run(":80")
 }
 func initWS(r *gin.Engine) {
 	m := melody.New()

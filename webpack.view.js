@@ -4,11 +4,11 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        "static/admin/index": "./src/view/admin/index.ts",
-        "static/panel/index": "./src/view/panel/index.ts"
+        "view/admin": "./src/view/admin/index.ts",
+        // "panel/index": "./src/view/panel/index.ts"
     },
     output: {
-        path: './app',
+        path: './static',
         filename: "[name].js"
     },
     devtool: 'source-map',

@@ -1,4 +1,4 @@
-package hupuAPI
+package router
 
 import (
 	"github.com/gin-gonic/gin"
@@ -8,7 +8,7 @@ import (
 	"utils/jex"
 )
 
-func SetupRouter(r *gin.Engine) {
+func SetupHupuAPI(r *gin.Engine) {
 	r.GET("/api/players/:round", func(c *gin.Context) {
 		round := c.Param("round")
 		response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/players/" + round)

@@ -55,9 +55,20 @@ func (g *GoDB)Update(jo *jex.JsonEx) {
 	//	Println("_id exist", _id)
 	//	//_id = utils.RandStringBytesMaskImprSrc(7)
 	//}
-	g.Insert(jo)
+	var _id = jo.GetString("_id")
+	g._dataMap[_id] = jo
+	g.writeJexDoc(jo)
 }
+func (g *GoDB)writeJexDoc(jo *jex.JsonEx) {
+	Println("insert doc:", jo.String())
+	f, err := os.OpenFile(g._path, os.O_APPEND, 0666)
+	if err != nil {
+		Println("error Insert ", err)
+	}
+	f.WriteString(jo.String())
 
+	defer f.Close()
+}
 func (g *GoDB)Insert(jo *jex.JsonEx) {
 	var _id string
 	_id = utils.RandStringBytesMaskImprSrc(7)
@@ -70,16 +81,9 @@ func (g *GoDB)Insert(jo *jex.JsonEx) {
 		}
 	}
 	jo.SetP(_id, "_id")
+
 	g._dataMap[_id] = jo
-
-	Println("insert doc:", jo.String())
-	f, err := os.OpenFile(g._path, os.O_APPEND, 0666)
-	if err != nil {
-		Println("error Insert ", err)
-	}
-	f.WriteString(jo.String())
-
-	defer f.Close()
+	g.writeJexDoc(jo)
 }
 
 func (g *GoDB) Init(fileName string) {

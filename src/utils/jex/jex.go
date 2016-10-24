@@ -15,12 +15,6 @@ func Type() interface{} {
 	return t
 }
 
-type JsonEx2 gabs.Container
-
-func (jex *JsonEx2)Data() interface{} {
-	return jex.Data()
-}
-
 func (jex *JsonEx)Ctn(path string) *gabs.Container {
 	return jex.ctn
 }
@@ -58,7 +52,7 @@ func (jex *JsonEx)GetNumber(path string) float64 {
 func Sort(jex []*JsonEx, opPath string) []*JsonEx {
 	//fmt.Println(string(opPath[0]))
 	op := string(opPath[0])
-	path:=string(opPath[1:len(opPath)-1])
+	path := string(opPath[1:len(opPath) - 1])
 	s := sorty.NewSorter().ByKeys([]string{
 		op + "key",
 	})
@@ -89,7 +83,6 @@ func (jex *JsonEx)Load(param  interface{}) *JsonEx {
 		jex.ctn = inst;
 	default:
 		fmt.Println("unknow")
-
 	}
 	return jex
 }
