@@ -3,21 +3,26 @@ package jex
 import (
 	"github.com/Jeffail/gabs"
 	"fmt"
+	"github.com/coryb/sorty"
 )
 
 type JsonEx struct {
 	ctn *gabs.Container
 }
 
+func Type() interface{} {
+	var t JsonEx
+	return t
+}
+
 type JsonEx2 gabs.Container
+
 func (jex *JsonEx2)Data() interface{} {
 	return jex.Data()
 }
 
 func (jex *JsonEx)Ctn(path string) *gabs.Container {
 	return jex.ctn
-}
-func (jex *JsonEx)Sort(key string)  {
 }
 func (jex *JsonEx)GetArray(path string) []*JsonEx {
 	var children, _ = jex.ctn.Path(path).Children()
@@ -48,6 +53,31 @@ func (jex *JsonEx)GetString(path string) string {
 func (jex *JsonEx)GetNumber(path string) float64 {
 	v, _ := jex.ctn.Path(path).Data().(float64)
 	return v
+}
+
+func Sort(jex []*JsonEx, opPath string) []*JsonEx {
+	//fmt.Println(string(opPath[0]))
+	op := string(opPath[0])
+	path:=string(opPath[1:len(opPath)-1])
+	s := sorty.NewSorter().ByKeys([]string{
+		op + "key",
+	})
+	var tmpArr = make([]map[string]interface{}, len(jex))
+	for i := range jex {
+		tmpArr[i] = map[string]interface{}{"jex": jex[i], "key": jex[i].GetNumber(path)}
+	}
+	s.Sort(tmpArr)
+	//
+	var sortJexArr = make([]*JsonEx, len(jex))
+	for i := range tmpArr {
+		sortJexArr[i] = tmpArr[i]["jex"].(*JsonEx)
+	}
+	//fmt.Println(sortJexArr)
+	return sortJexArr
+}
+
+func (jex *JsonEx)Clone() *JsonEx {
+	return Load(jex.ctn.Bytes())
 }
 
 func (jex *JsonEx)Load(param  interface{}) *JsonEx {

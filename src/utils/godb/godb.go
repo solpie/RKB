@@ -6,7 +6,6 @@ import (
 	"bufio"
 	"utils/jex"
 	"utils"
-	. "github.com/coryb/sorty"
 )
 
 type GoDB struct {
@@ -43,12 +42,24 @@ func (g *GoDB)flush() {
 	}
 
 }
-func (g *GoDB)Insert(jo *jex.JsonEx) {
-	var _id = ""
-	// _id2,_:= jo.GetString("_id")
-	//if _id2!=nil{
-	//	_id = _id2
+func (g *GoDB)Find() {
+
+}
+func (g *GoDB)Update(jo *jex.JsonEx) {
+	//var _id = jo.GetString("_id")
+	//if _id != nil {
+	//	g._dataMap[_id] = jo
 	//}
+	//
+	//if g._dataMap[_id] != nil {
+	//	Println("_id exist", _id)
+	//	//_id = utils.RandStringBytesMaskImprSrc(7)
+	//}
+	g.Insert(jo)
+}
+
+func (g *GoDB)Insert(jo *jex.JsonEx) {
+	var _id string
 	_id = utils.RandStringBytesMaskImprSrc(7)
 	for {
 		if g._dataMap[_id] != nil {
@@ -59,6 +70,7 @@ func (g *GoDB)Insert(jo *jex.JsonEx) {
 		}
 	}
 	jo.SetP(_id, "_id")
+	g._dataMap[_id] = jo
 
 	Println("insert doc:", jo.String())
 	f, err := os.OpenFile(g._path, os.O_APPEND, 0666)
@@ -99,7 +111,6 @@ func (g *GoDB) Init(fileName string) {
 	Println("init db:", g._path, "count:", docCount)
 
 	g.flush()
-	//g.Insert(nil)
 }
 
 func readLine(r *bufio.Reader) ([]byte, error) {
@@ -113,57 +124,4 @@ func readLine(r *bufio.Reader) ([]byte, error) {
 		ln = append(ln, line...)
 	}
 	return ln, err
-}
-
-func Test() {
-	var playerDb = new(GoDB)
-	playerDb.Init("./db/player2.db")
-
-	var newDb = new(GoDB)
-	newDb.Init("./db/ft.db")
-
-	//playerDb.Insert(nil)
-	Println(playerDb.Path())
-
-	Println("test insert")
-
-	//jex :=jex.JsonEx{jsonObj}
-	var jo = jex.Load([]byte(`{
-    "outter":{
-        "inner":{
-            "value1":10,
-            "value2":22
-        },
-        "alsoInner":{
-            "value1":20
-        }
-    }
-}`))
-	newDb.Insert(jo)
-	Println(jo.GetNumber("outter.inner.value1"))
-	//jsonObj := gabs.New()
-	// or gabs.Consume(jsonObject) to work on an existing map[string]interface{}
-
-	//jsonObj.Set(99, "outter", "inner", "value")
-	jo.SetP(998, "outter.inner.value2")
-	//jsonObj.Set(30, "outter", "inner2", "value3")
-
-	Println(jo.String())
-	utils.Test()
-
-	////test sort
-	s := NewSorter().ByKeys([]string{
-		"-bar",
-	})
-
-	data := []map[string]interface{}{
-		{"foo": "abc", "bar": 890},
-		{"foo": "xyz", "bar": 123},
-		{"foo": "def", "bar": 456},
-		{"foo": "mno", "bar": 789},
-		{"foo": "def", "bar": 789},
-	}
-
-	s.Sort(data)
-	Println(data)
 }

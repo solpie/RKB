@@ -3,7 +3,6 @@ package utils
 import (
 	"math/rand"
 	"time"
-	"fmt"
 	"reflect"
 )
 
@@ -39,6 +38,7 @@ type Arr struct {
 	//_arr []interface{}
 	elemType   reflect.Type
 	sliceValue reflect.Value
+	v interface{}
 }
 
 //func (arr *Arr)Push(item interface{}) interface{} {
@@ -50,11 +50,16 @@ type Arr struct {
 func (self *Arr)Arr() interface{} {
 	return self.sliceValue.Interface()
 }
-func (self *Arr)New(sample interface{}) *Arr {
-	value := reflect.ValueOf(sample)
-	self.sliceValue = reflect.MakeSlice(value.Type(), 0, 0)
-	self.elemType = reflect.TypeOf(sample).Elem()
-	return  self
+//func (self *Arr)Arr2() interface{} {
+//	return self.sliceValue.Interface().(reflect.TypeOf(self.v ))
+//}
+
+
+func (self *Arr)New(typeObj interface{}) *Arr {
+	self.v = typeObj
+	self.sliceValue = reflect.MakeSlice(reflect.SliceOf(reflect.TypeOf(typeObj)), 0, 0)
+	self.elemType = reflect.TypeOf(typeObj)
+	return self
 }
 func (self *Arr) Push(e interface{}) bool {
 	if reflect.TypeOf(e) != self.elemType {
@@ -67,24 +72,9 @@ func (self *Arr) ElemType() reflect.Type {
 	return self.elemType
 }
 
-func NewArr() {
-
+func NewArr(sample interface{}) *Arr {
+	var a Arr
+	return a.New(sample)
 }
 
 
-
-func Test() {
-	var a = Arr{}
-	a.New(make([]int,0))
-	a.Push(1)
-	a.Push(2)
-	inst:=a.Arr().([]int)
-
-	var numArr = []int{1,2}
-	numArr = append(numArr,3)
-	//Arr2(numArr).Push(3)
-
-	//inst:=([]int).(a.Arr())
-	fmt.Println("Arr Test():",inst)
-	fmt.Println("Arr2 Test():",numArr)
-}
