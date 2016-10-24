@@ -6,5 +6,5 @@ import (
 )
 
 func Testmain(t *testing.T) {
-	godb.Test()
+	//godb.Test()
 }

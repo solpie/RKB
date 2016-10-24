@@ -42,8 +42,13 @@ func (g *GoDB)flush() {
 	}
 
 }
-func (g *GoDB)Find() {
+func (g *GoDB)Find()map[string]*jex.JsonEx {
+	//g._dataMap[""]
+	//g._dataMap
+	//gabs
 
+
+	return g._dataMap;
 }
 func (g *GoDB)Update(jo *jex.JsonEx) {
 	//var _id = jo.GetString("_id")
@@ -96,6 +101,19 @@ func (g *GoDB) Init(fileName string) {
 
 	g._dataMap = make(map[string]*jex.JsonEx)
 	//g.DataMap = make(map[string]string)
+	var readLine = func(r *bufio.Reader) ([]byte, error) {
+		var (
+			isPrefix bool = true
+			err error = nil
+			line, ln []byte
+		)
+		for isPrefix && err == nil {
+			line, isPrefix, err = r.ReadLine()
+			ln = append(ln, line...)
+		}
+		return ln, err
+	}
+
 	r := bufio.NewReader(f)
 	line, e := readLine(r)
 	var docCount = 0
@@ -116,16 +134,20 @@ func (g *GoDB) Init(fileName string) {
 
 	g.flush()
 }
-
-func readLine(r *bufio.Reader) ([]byte, error) {
-	var (
-		isPrefix bool = true
-		err error = nil
-		line, ln []byte
-	)
-	for isPrefix && err == nil {
-		line, isPrefix, err = r.ReadLine()
-		ln = append(ln, line...)
-	}
-	return ln, err
+func Load(path string) *GoDB {
+	var db = new(GoDB)
+	db.Init(path)
+	return db;
 }
+//func readLine(r *bufio.Reader) ([]byte, error) {
+//	var (
+//		isPrefix bool = true
+//		err error = nil
+//		line, ln []byte
+//	)
+//	for isPrefix && err == nil {
+//		line, isPrefix, err = r.ReadLine()
+//		ln = append(ln, line...)
+//	}
+//	return ln, err
+//}

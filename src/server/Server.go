@@ -5,10 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/olahol/melody"
 	"router"
+	"model"
 )
 
 func InitServer() {
 	//gin.SetMode(gin.ReleaseMode)
+	model.Db()
 	var ginEngine = gin.Default()
 	ginEngine.Static("/static", "./static")
 	ginEngine.LoadHTMLGlob("./static/tmpl/*")

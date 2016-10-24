@@ -3,6 +3,7 @@
  */
 import {Navbar} from "./navbar/Navbar";
 import {HomeView} from "./home/home";
+import {PlayerView} from "./player/player";
 //////////////
 ///////////////////
 
@@ -11,10 +12,10 @@ var routes = [
         path: '/', name: 'home',
         components: {default: HomeView, Navbar: Navbar}
     },
-    // {
-    //     path: '/setting', name: 'setting',
-    //     components: {default: SettingView, Navbar: Navbar},
-    // }
+    {
+        path: '/player', name: 'player',
+        components: {default: PlayerView, Navbar: Navbar},
+    }
 ];
 
 declare var VueRouter;
