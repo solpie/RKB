@@ -13,7 +13,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(index,playerDoc) in playerDocArr">
+        <tr v-for="(playerDoc,index) in playerDocArr">
             <!--<td><img src="{{playerDoc.avatar}}" style="width: 100px"></td>-->
             <td v-text="playerDoc.name"></td>
             <td v-text="(playerDoc.winGameCount+playerDoc.loseGameCount)||0"></td>

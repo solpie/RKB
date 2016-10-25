@@ -53,5 +53,9 @@ export var getEloRank = (gameDataArr)=> {
             else break;
         }
     }
+    for(var k in playerMap)
+    {
+        console.log(playerMap[k]);
+    }
     return playerMap;
 };
