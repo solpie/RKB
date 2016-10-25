@@ -1,6 +1,7 @@
 import {PlayerInfo} from "../../model/PlayerInfo";
 import {mapToArr, descendingProp} from "../../utils/JsFunc";
 import {$} from "../../libs";
+import {getEloRank} from "./elo";
 export var RankView = {
     template: require('./rank.html'),
     props: {
@@ -11,12 +12,28 @@ export var RankView = {
 
     mounted() {
         console.log("rank");
-        $.post('/db/elo', {}, (data)=> {
-            var playerMap = data.PlayerMap;
-            this.playerDocArr = mapToArr(playerMap).sort(descendingProp('eloScore'));
-            // this.playerDocArr = rank;
-        });
+        var gameIdArr = [23, 21, 22, 39];
+        var gameDataArr = [];
+        var gameId;
+        var getGameData = (i)=> {
+            if (i < gameIdArr.length) {
+                gameId = gameIdArr[i];
+                $.get('/api/passerbyking/game/match/' + gameId, (data)=> {
+                    // $.get('/db/elo', {gameIdArr: [23, 21, 22, 29, 39]}, (data)=> {
+                    console.log(data);
+                    gameDataArr.push(data);
+                    // this.playerDocArr = rank;
+                    getGameData(i + 1);
+                });
 
+            }
+            else {
+                var playerMap = getEloRank(gameDataArr);
+                console.log('player map',playerMap);
+                this.playerDocArr = mapToArr(playerMap).sort(descendingProp('eloScore'));
+            }
+        };
+        getGameData(0)
     },
     methods: {
         onSortWinPercent() {

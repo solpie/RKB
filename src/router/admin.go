@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"model"
 	"utils/jex"
+	"fmt"
 )
 
 func SetupDb(r *gin.Engine) {
@@ -21,6 +22,8 @@ func playerEndpoint(c *gin.Context) {
 	c.JSON(200, jo.Data())
 }
 func eloEndpoint(c *gin.Context) {
+	gameIdArr := c.PostForm("gameIdArr")
+	fmt.Println("gameIdArr", c.Request.Body,gameIdArr)
 	var jo = jex.Load([]byte(`{"PlayerArr":` + model.Db().PlayerDb.JsonArrString() + "}"))
 	c.JSON(200, jo.Data())
 }

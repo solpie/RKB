@@ -13,7 +13,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="playerDoc in playerDocArr">
+        <tr v-for="(index,playerDoc) in playerDocArr">
             <!--<td><img src="{{playerDoc.avatar}}" style="width: 100px"></td>-->
             <td v-text="playerDoc.name"></td>
             <td v-text="(playerDoc.winGameCount+playerDoc.loseGameCount)||0"></td>
@@ -21,7 +21,7 @@
             <td v-text="playerDoc.score"></td>
             <td v-text="playerDoc.eloScore"></td>
             <td v-text="playerDoc.eloScore"></td>
-            <td v-text="$index+1"></td>
+            <td v-text="index+1"></td>
         </tr>
         </tbody>
     </table>

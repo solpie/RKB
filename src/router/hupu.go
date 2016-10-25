@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"utils/jex"
+	"fmt"
 )
 
 func SetupHupuAPI(r *gin.Engine) {
@@ -25,9 +26,24 @@ func SetupHupuAPI(r *gin.Engine) {
 
 		c.JSON(200, jo.Data())
 	})
+	/*
+ 23 hefei1
+ 21 sh6
+ 22 sh7
+ 29 hz1
+ 39 sh8
+ * */
 	r.GET("/api/round/:round", func(c *gin.Context) {
 		round := c.Param("round")
 		response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/match/" + round)
+		defer response.Body.Close()
+		body, _ := ioutil.ReadAll(response.Body)
+		c.JSON(200, jex.Load(body).Data())
+	})
+	r.GET("/api/passerbyking/*api", func(c *gin.Context) {
+		api := c.Param("api")
+		fmt.Println(api)
+		response, _ := http.Get("http://api.liangle.com/api/passerbyking" + api)
 		defer response.Body.Close()
 		body, _ := ioutil.ReadAll(response.Body)
 		c.JSON(200, jex.Load(body).Data())
