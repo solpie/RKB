@@ -4,17 +4,22 @@
 import {Navbar} from "./navbar/Navbar";
 import {HomeView} from "./home/home";
 import {PlayerView} from "./player/player";
+import {RankView} from "./rank/rank";
 //////////////
 ///////////////////
 
 var routes = [
     {
         path: '/', name: 'home',
-        components: {default: HomeView, Navbar: Navbar}
+        components: {content: HomeView, Navbar: Navbar}
     },
     {
         path: '/player', name: 'player',
-        components: {default: PlayerView, Navbar: Navbar},
+        components: {content: PlayerView, Navbar: Navbar},
+    },
+    {
+        path: '/rank', name: 'rank',
+        components: {content: RankView, Navbar: Navbar},
     }
 ];
 

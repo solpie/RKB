@@ -38,7 +38,7 @@ func InitServer() {
 		//c.String(http.StatusOK, message)
 	})
 	router.SetupHupuAPI(ginEngine)
-	router.SetupAdmin(ginEngine)
+	router.SetupDb(ginEngine)
 
 	initWS(ginEngine)
 	//httpTest(router)

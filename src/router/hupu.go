@@ -25,5 +25,12 @@ func SetupHupuAPI(r *gin.Engine) {
 
 		c.JSON(200, jo.Data())
 	})
+	r.GET("/api/round/:round", func(c *gin.Context) {
+		round := c.Param("round")
+		response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/match/" + round)
+		defer response.Body.Close()
+		body, _ := ioutil.ReadAll(response.Body)
+		c.JSON(200, jex.Load(body).Data())
+	})
 
 }

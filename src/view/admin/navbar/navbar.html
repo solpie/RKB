@@ -11,6 +11,9 @@
                 <li :class="{active: active === 'game'}">
                     <router-link :to="{ name: 'game'}">比赛管理</router-link>
                 </li>
+                <li :class="{active: active === 'rank'}">
+                    <router-link :to="{ name: 'rank'}">天梯排名</router-link>
+                </li>
             </ul>
             <ul class="right hide-on-med-and-down">
                 <li :class="{active: active === 'setting'}">

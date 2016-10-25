@@ -5,7 +5,8 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     entry: {
         "view/admin": "./src/view/admin/index.ts",
-        // "panel/index": "./src/view/panel/index.ts"
+        "view/lib": ["./static/js/vue/vue.min.js", "./static/js/vue/vue-router.min.js"],
+        "view/panel": "./src/view/panel/index.ts"
     },
     output: {
         path: './static',
