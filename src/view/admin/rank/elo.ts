@@ -1,5 +1,5 @@
 import {EloUtil} from "../../utils/EloUtil";
-export var getEloRank = (gameDataArr)=> {
+export var getEloRank = (gameDataArr, gameRecArr)=> {
     var playerMap = {};
     var gameArr = gameDataArr;
     for (var j = 0; j < gameArr.length; j++) {
@@ -31,6 +31,12 @@ export var getEloRank = (gameDataArr)=> {
                 var leftPlayer = playerMap[leftPlayerData.name];
                 var rightPlayer = playerMap[rightPlayerData.name];
 
+                gameRecArr.push({
+                    round: game.round,
+                    left: {name: leftPlayer.name, score: leftPlayerData.score},
+                    right: {name: rightPlayer.name, score: rightPlayerData.score}
+                });
+
                 var dt = EloUtil.classicMethod(leftPlayer.eloScore, rightPlayer.eloScore);
                 leftPlayer.score += leftPlayerData.score;
                 rightPlayer.score += rightPlayerData.score;
@@ -53,9 +59,8 @@ export var getEloRank = (gameDataArr)=> {
             else break;
         }
     }
-    for(var k in playerMap)
-    {
-        console.log(playerMap[k]);
-    }
+    // for (var k in playerMap) {
+    //     console.log(playerMap[k]);
+    // }
     return playerMap;
 };
