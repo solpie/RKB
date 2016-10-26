@@ -1,7 +1,9 @@
 import {Profile} from "./profile";
 import {CommandId} from "../../Command";
-import {$, ViewEvent} from "../../libs";
+import {ViewEvent} from "../../libs";
 // import {CommandId} from "../../../../event/Command";
+var $ = require('jquery');
+declare var jQurey;
 export var PlayerView = {
     template: require('./player.html'),
     components: {Profile},
@@ -14,7 +16,7 @@ export var PlayerView = {
     ],
     mounted: function () {
         console.log('player Ready!!');
-
+        // ($('.ui.sidebar') as any).sidebar('toggle');
         this.$http.post('/db/player', {all: true}).then((res)=> {
             console.log(res);
             this.playerArr = res.body.PlayerArr;

@@ -7,11 +7,21 @@ export var RankView = {
     props: {
         playerDocArr: {
             type: Array
+        },
+        gameDataArr: {
+            type: Array
+        },
+        playerGameRecArr: {
+            type: Array
         }
     },
 
     mounted() {
         console.log("rank");
+        this.playerGameRecArr = [{
+            left: {name: "player3", score: 1},
+            right: {name: "player1", score: 2}
+        }];
         var gameIdArr = [23, 21, 22, 39];
         var gameDataArr = [];
         var gameId;
@@ -21,6 +31,7 @@ export var RankView = {
                 $.get('/api/passerbyking/game/match/' + gameId, (data)=> {
                     // $.get('/db/elo', {gameIdArr: [23, 21, 22, 29, 39]}, (data)=> {
                     console.log(data);
+                    data.round = gameId;
                     gameDataArr.push(data);
                     // this.playerDocArr = rank;
                     getGameData(i + 1);
@@ -28,8 +39,9 @@ export var RankView = {
 
             }
             else {
+                this.gameDataArr = gameDataArr;
                 var playerMap = getEloRank(gameDataArr);
-                console.log('player map',playerMap);
+                console.log('player map', playerMap);
                 this.playerDocArr = mapToArr(playerMap).sort(descendingProp('eloScore'));
             }
         };
@@ -39,7 +51,9 @@ export var RankView = {
         onSortWinPercent() {
             console.log('onSortWinPercent');
         },
-
+        onShowRec(playerName) {
+            console.log('onShowRec', playerName);
+        },
         onSortGameCount() {
             for (var p of this.playerDocArr) {
                 p.gameCount = PlayerInfo.gameCount(p);
