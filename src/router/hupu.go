@@ -4,25 +4,43 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"io/ioutil"
-	"log"
+	//"log"
 	"utils/jex"
 	"fmt"
 )
 
+func GetRoundPlayerData(round string) (*jex.JsonEx, []*jex.JsonEx) {
+	response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/players/" + round)
+	defer response.Body.Close()
+	body, _ := ioutil.ReadAll(response.Body)
+
+	var jo = jex.Load(body)
+
+	var playerArr = jo.GetArray("data")
+	//for _, player := range playerArr {
+	//	//var playerName = player.GetString("name")
+	//	//var playerNum = player.GetString("playerNum")
+	//	//log.Printf("player %s: %s\n", playerNum, playerName)
+	//}
+	return jo, playerArr
+}
+
 func SetupHupuAPI(r *gin.Engine) {
 	r.GET("/api/players/:round", func(c *gin.Context) {
 		round := c.Param("round")
-		response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/players/" + round)
-		defer response.Body.Close()
-		body, _ := ioutil.ReadAll(response.Body)
-
-		var jo = jex.Load(body)
-		var playerArr = jo.GetArray("data")
-		for _, player := range playerArr {
-			var playerName = player.GetString("name")
-			var playerNum = player.GetString("playerNum")
-			log.Printf("player %s: %s\n", playerNum, playerName)
-		}
+		//response, _ := http.Get("http://api.liangle.com/api/passerbyking/game/players/" + round)
+		//defer response.Body.Close()
+		//body, _ := ioutil.ReadAll(response.Body)
+		//
+		//var jo = jex.Load(body)
+		//
+		//var playerArr = jo.GetArray("data")
+		//for _, player := range playerArr {
+		//	var playerName = player.GetString("name")
+		//	var playerNum = player.GetString("playerNum")
+		//	log.Printf("player %s: %s\n", playerNum, playerName)
+		//}
+		var jo,_ = GetRoundPlayerData(round)
 
 		c.JSON(200, jo.Data())
 	})
@@ -40,6 +58,7 @@ func SetupHupuAPI(r *gin.Engine) {
 		body, _ := ioutil.ReadAll(response.Body)
 		c.JSON(200, jex.Load(body).Data())
 	})
+
 	r.GET("/api/passerbyking/*api", func(c *gin.Context) {
 		api := c.Param("api")
 		fmt.Println(api)

@@ -32,7 +32,6 @@ var router = new VueRouter({
 router.afterEach((to, from) => {
     var toPath = to.path;
     router.app.active = toPath.split("/")[1];
-    // router.app.monitorModel = monitorModel;
 });
 
 var app = new Vue({
