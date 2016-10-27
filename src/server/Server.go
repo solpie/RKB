@@ -3,9 +3,13 @@ package server
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"github.com/olahol/melody"
 	"router"
 	"model"
+	"github.com/skip2/go-qrcode"
+	"github.com/googollee/go-socket.io"
+	"encoding/base64"
+	"fmt"
+	"log"
 )
 
 func InitServer() {
@@ -28,6 +32,19 @@ func InitServer() {
 		})
 	})
 
+	ginEngine.GET("/qrcode", func(c *gin.Context) {
+		//var png []byte
+		var png, _ = qrcode.Encode("https://example.org", qrcode.Medium, 256)
+		//base64Text := make([]byte, 0)
+		//base64.StdEncoding.Encode(base64Text, png)
+		str := base64.StdEncoding.EncodeToString(png)
+		var imgSrc = "data:image/png;base64,"+str
+		fmt.Println(str)
+		c.String(200,imgSrc)
+		//c.String(200, `<img str="` + str + `">`)
+		//base64.NewEncoder(base64.StdEncoding,png)
+	})
+
 	ginEngine.GET("/panel/:name/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "panel.tmpl", gin.H{
 			"title": "Main website",
@@ -41,26 +58,37 @@ func InitServer() {
 	router.SetupDb(ginEngine)
 
 	initWS(ginEngine)
-	//httpTest(router)
 	ginEngine.Run(":80")
 }
 func initWS(r *gin.Engine) {
-	m := melody.New()
-	r.GET("/ws", func(c *gin.Context) {
-		m.HandleRequest(c.Writer, c.Request)
-	})
-	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		m.BroadcastFilter(msg, func(q *melody.Session) bool {
-			return q.Request.URL.Path == s.Request.URL.Path
+	server, err := socketio.NewServer(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	server.On("connection", func(so socketio.Socket) {
+		log.Println("on connection")
+		so.Join("chat")
+		so.On("chat message", func(msg string) {
+			log.Println("emit:", so.Emit("chat message", msg))
+			so.BroadcastTo("chat", "chat message", msg)
+		})
+		so.On("disconnection", func() {
+			log.Println("on disconnect")
 		})
 	})
-	r.GET("/cmd/:cmdId", func(c *gin.Context) {
-		cmdId := c.Param("cmdId")
-		m.Broadcast([]byte(cmdId))
+	server.On("error", func(so socketio.Socket, err error) {
+		log.Println("error:", err)
 	})
 
-	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		m.Broadcast(msg)
+	r.GET("/socket.io/", func(c *gin.Context) {
+		server.ServeHTTP(c.Writer,c.Request)
+		//m.HandleRequest(c.Writer, c.Request)
 	})
+
+	r.GET("/cmd/:cmdId", func(c *gin.Context) {
+		cmdId := c.Param("cmdId")
+		log.Println(cmdId)
+	})
+
 
 }

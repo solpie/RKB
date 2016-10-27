@@ -1,69 +1,42 @@
+<!doctype html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>goofy gophers</title>
+    <title>Socket.IO chat</title>
     <style>
-  body {
-    cursor: none;
-    overflow: hidden;
-  }
-  .gopher {
-    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Go_gopher_mascot_bw.png/768px-Go_gopher_mascot_bw.png');
-    width: 95px;
-    height: 95px;
-    background-size: cover;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-  }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
     </style>
 </head>
 <body>
+<ul id="messages"></ul>
+<form action="">
+    <input id="m" autocomplete="off" /><button>Send</button>
+</form>
 <script src="/static/js/socket.io-1.4.5.min.js"></script>
+<script src="/static/js/jquery.min.js"></script>
 <script>
-      var url = "ws://" + window.location.host + "/ws";
-      var ws = new WebSocket(url);
-      var myid = -1;
-      ws.onmessage = function (msg) {
-      console.log('msg:',msg);
-        var cmds = {"iam": iam, "set": set, "dis": dis};
-        if (msg.data) {
-          var parts = msg.data.split(" ")
-          var cmd = cmds[parts[0]];
-          if (cmd) {
-            cmd.apply(null, parts.slice(1));
-          }
-        }
-      };
-      function iam(id) {
-        myid = id;
-      }
-      function set(id, x, y) {
-        var node = document.getElementById("gopher-" + id);
-        if (!node) {
-          node = document.createElement("div");
-          document.body.appendChild(node);
-          node.className = "gopher";
-          node.style.zIndex = id + 1;
-          node.id = "gopher-" + id;
-        }
-        node.style.left = x + "px";
-        node.style.top = y + "px";
-      }
-      function dis(id) {
-        var node = document.getElementById("gopher-" + id);
-        if (node) {
-          document.body.removeChild(node);
-        }
-      }
-      window.onmousemove = function (e) {
-        if (myid > -1) {
-          set(myid, e.pageX, e.pageY);
-          ws.send([e.pageX, e.pageY].join(" "));
-        }
-      }
-
+    var socket = io();
+    socket.connect('/ws');
+    $('form').submit(function(){
+        socket.emit('chat message with ack', $('#m').val(), function(data){
+            $('#messages').append($('<li>').text('ACK CALLBACK: ' + data));
+        });
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+    });
+    socket.on('connect', function(msg){
+        console.log('connect');
+    });
+    socket.on('chat message', function(msg){
+        $('#messages').append($('<li>').text(msg));
+    });
 </script>
 </body>
 </html>

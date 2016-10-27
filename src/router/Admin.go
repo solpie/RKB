@@ -23,18 +23,33 @@ func playerEndpoint(c *gin.Context) {
 	c.JSON(200, jo.Data())
 }
 func syncPlayerEndpoint(c *gin.Context) {
-	var gameIdArr = []int{23, 21, 22, 29, 39}
+	var gameIdArr = []string{"23", "21", "22", "29", "39", "47"}
 
-	var playerArr = []*jex.JsonEx{}
+	//var playerArr = []*jex.JsonEx{}
+	//playerDoc model.PlayerDoc
+	var playerDoc *model.PlayerDoc
 	for _, gameId := range gameIdArr {
-		var _,playerJoArr  =GetRoundPlayerData(string(gameId))
-		for _,jo :=range playerJoArr{
-			playerArr = append(playerArr,jo)
+		var _, playerJoArr = GetRoundPlayerData(gameId)
+		for _, jo := range playerJoArr {
+			var playerName = jo.GetString("name")
+			if _, ok := model.Db().PlayerMap[playerName]; !ok {
+				model.Db().PlayerMap[playerName] = new(model.PlayerDoc).Init()
+			}
+			playerDoc = model.Db().PlayerMap[playerName]
+			playerDoc.SetP(jo.GetString("playerNum"),"id")
+			playerDoc.SetP(jo.GetNumber("playerNum"),"playerNum")
+			playerDoc.SetP(jo.GetString("name"),"name")
+			playerDoc.SetP(jo.GetString("ftName"),"group")
+			playerDoc.SetP(jo.GetString("intro"),"intro")
+			playerDoc.SetP(jo.GetString("height"),"height")
+			playerDoc.SetP(jo.GetString("weight"),"weight")
+			playerDoc.SetP(jo.GetString("avatar"),"avatar")
 		}
 	}
 	//http://api.liangle.com/api/passerbyking/game/players/
 	//var jo = jex.Load([]byte(`{"PlayerArr":` + model.Db().PlayerDb.JsonArrString() + "}"))
-	c.JSON(200, gin.H{"ok":"ok"})
+	c.JSON(200, playerDoc.Data())
+
 
 }
 func eloEndpoint(c *gin.Context) {
