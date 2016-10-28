@@ -6,32 +6,21 @@ import (
 	"sync"
 )
 
-//var PlayerDb *godb.GoDB
 
-//func InitDb() {
-//	var PlayerDb = godb.Load("./db/player.db")
-//	fmt.Println(PlayerDb.Path())
-//}
-
-
-//package singleton
-
-//import "sync"
-
-type single struct {
+type DbModel struct {
 	O         interface{};
 	PlayerDb  *godb.GoDB
 	PlayerMap map[string]*PlayerDoc
 }
 
-var instantiated *single
+var inst *DbModel
 var once sync.Once
 
-func Db() *single {
+func Db() *DbModel {
 	once.Do(func() {
-		instantiated = &single{}
-		instantiated.PlayerDb = godb.Load("./db/player.db")
-		instantiated.PlayerMap = make(map[string]*PlayerDoc)
+		inst = &DbModel{}
+		inst.PlayerDb = godb.Load("./db/player.db")
+		inst.PlayerMap = make(map[string]*PlayerDoc)
 	})
-	return instantiated
+	return inst
 }

@@ -5,7 +5,9 @@ import (
 	"time"
 	"reflect"
 )
-
+type JParam struct {
+	JsonStr string `json:"jstr"`
+}
 /////////////////////  random string
 var src = rand.NewSource(time.Now().UnixNano())
 

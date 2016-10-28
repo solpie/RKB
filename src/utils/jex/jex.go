@@ -4,6 +4,8 @@ import (
 	"github.com/Jeffail/gabs"
 	"fmt"
 	"github.com/coryb/sorty"
+	"github.com/gin-gonic/gin"
+	"utils"
 )
 
 type JsonEx struct {
@@ -84,8 +86,12 @@ func (jex *JsonEx)Clone() *JsonEx {
 
 func (jex *JsonEx)Load(param  interface{}) *JsonEx {
 	switch inst := param.(type){
+	case *gin.Context:
+		var p utils.JParam
+		inst.BindJSON(&p)
+		jex.Load(p.JsonStr)
 	case string:
-		jex.ctn,_ = gabs.ParseJSON([]byte(inst))
+		jex.ctn, _ = gabs.ParseJSON([]byte(inst))
 	case []byte:
 		ctn, _ := gabs.ParseJSON(inst)
 		jex.ctn = ctn;

@@ -1,3 +1,6 @@
+export var JParam = (o)=> {
+    return {jstr:JSON.stringify(o)};
+};
 export enum CommandId{
     dmkPush,
     ShowConsoleWin = 100000,
