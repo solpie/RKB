@@ -9,8 +9,8 @@ var routes = [
     }
 ];
 
-// import Vue = require('vue');
-// import VueRouter = require('vue-router');
+// require('./../../../static/js/vue/vue.min.js');
+// require('./../../../static/js/vue/vue-router.min.js');
 declare var VueRouter;
 declare var Vue;
 var router = new VueRouter({
@@ -18,9 +18,6 @@ var router = new VueRouter({
 });
 
 router.afterEach((to, from) => {
-    // var toPath = to.path;
-    // router.app.active = toPath.split("/")[1];
-    // router.app.monitorModel = monitorModel;
 });
 
 var app = new Vue({

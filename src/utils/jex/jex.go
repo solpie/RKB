@@ -47,6 +47,10 @@ func (jex *JsonEx)GetString(path string) string {
 	v, _ := jex.ctn.Path(path).Data().(string)
 	return v
 }
+func (jex *JsonEx)GetBool(path string) bool {
+	v, _ := jex.ctn.Path(path).Data().(bool)
+	return v
+}
 
 func (jex *JsonEx)GetNumber(path string) float64 {
 	v, _ := jex.ctn.Path(path).Data().(float64)
@@ -80,6 +84,8 @@ func (jex *JsonEx)Clone() *JsonEx {
 
 func (jex *JsonEx)Load(param  interface{}) *JsonEx {
 	switch inst := param.(type){
+	case string:
+		jex.ctn,_ = gabs.ParseJSON([]byte(inst))
 	case []byte:
 		ctn, _ := gabs.ParseJSON(inst)
 		jex.ctn = ctn;

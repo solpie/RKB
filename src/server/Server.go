@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"utils/jex"
 )
 
 func InitServer() {
@@ -46,9 +47,9 @@ func InitServer() {
 	})
 
 	ginEngine.GET("/panel/:name/", func(c *gin.Context) {
+		name := c.Param("name")
 		c.HTML(http.StatusOK, "panel.tmpl", gin.H{
-			"title": "Main website",
-			"wsPort": 6969,
+			"panelName": name,
 		})
 		//name := c.Param("name")
 		//message := name
@@ -60,6 +61,10 @@ func InitServer() {
 	initWS(ginEngine)
 	ginEngine.Run(":80")
 }
+type JParam struct {
+	JsonStr string `json:"jstr"`
+}
+
 func initWS(r *gin.Engine) {
 	server, err := socketio.NewServer(nil)
 	if err != nil {
@@ -67,7 +72,7 @@ func initWS(r *gin.Engine) {
 	}
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("on connection")
-		so.Join("chat")
+		so.Join("panel")
 		so.On("chat message", func(msg string) {
 			log.Println("emit:", so.Emit("chat message", msg))
 			so.BroadcastTo("chat", "chat message", msg)
@@ -87,8 +92,18 @@ func initWS(r *gin.Engine) {
 
 	r.GET("/cmd/:cmdId", func(c *gin.Context) {
 		cmdId := c.Param("cmdId")
-		log.Println(cmdId)
+		log.Println(cmdId,c.Request.Body)
 	})
 
+	r.POST("/cmd/:cmdId", func(c *gin.Context) {
+		var url JParam
+		c.BindJSON(&url)
+		var jo = jex.Load(url.JsonStr)
+		var b = jo.GetBool("bool")
+		var n = jo.GetNumber("num")
+		var s = jo.GetString("string")
+		log.Println("PostForm",b,s,n)
 
+		c.String(200,"ok")
+	})
 }

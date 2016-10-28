@@ -12,4 +12,4 @@ export var Stage1v1View = {
     mounted: function () {
     },
 };
-console.log('created2')
+console.log('created2');
