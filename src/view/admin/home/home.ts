@@ -18,9 +18,9 @@ export var HomeView = {
             {title: "战团排行", url: "/panel/#!/stage1v1/auto/35?score=0"},
         ];
         console.log('post /admin/');
-        this.$http.post('/admin/', JParam({cmd: "opUrl"}), (res)=> {
+        this.$http.post('/admin/', JParam({cmd: "opUrl"})).then((res)=> {
             this.opUrlArr = res.opUrlArr;
-            console.log("/admin res:",res);
+            console.log("/admin res:", res);
         });
     },
     mounted: function () {

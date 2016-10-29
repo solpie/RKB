@@ -4,6 +4,7 @@ package model
 type ServerModel struct {
 	O         interface{};
 	OpUrlMap map[string]string
+	Port string
 }
 
 var instServerModel *ServerModel

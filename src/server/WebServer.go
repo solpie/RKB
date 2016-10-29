@@ -16,7 +16,12 @@ import (
 
 func InitServer() {
 	//gin.SetMode(gin.ReleaseMode)
+	//var confJo = jex.LoadFile("./conf.json")
+	//fmt.Println("conf.json", confJo.GetNumber("port"))
+
 	model.Db()
+	//model.SrvModel().Port = "8082"//string(confJo.GetNumber("port"))
+
 	var ginEngine = gin.Default()
 	ginEngine.Static("/static", "./static")
 	ginEngine.LoadHTMLGlob("./static/tmpl/*")
@@ -28,17 +33,15 @@ func InitServer() {
 		//http.ServeFile(c.Writer, c.Request, "./static/websocket.html")
 	})
 
-
-
 	ginEngine.GET("/qrcode", func(c *gin.Context) {
 		//var png []byte
 		var png, _ = qrcode.Encode("https://example.org", qrcode.Medium, 256)
 		//base64Text := make([]byte, 0)
 		//base64.StdEncoding.Encode(base64Text, png)
 		str := base64.StdEncoding.EncodeToString(png)
-		var imgSrc = "data:image/png;base64,"+str
+		var imgSrc = "data:image/png;base64," + str
 		fmt.Println(str)
-		c.String(200,imgSrc)
+		c.String(200, imgSrc)
 		//c.String(200, `<img str="` + str + `">`)
 		//base64.NewEncoder(base64.StdEncoding,png)
 	})
@@ -57,8 +60,8 @@ func InitServer() {
 
 	initWS(ginEngine)
 	ginEngine.Run(":80")
+	//ginEngine.Run(":" + model.SrvModel().Port)
 }
-
 
 func initWS(r *gin.Engine) {
 	server, err := socketio.NewServer(nil)
@@ -73,11 +76,11 @@ func initWS(r *gin.Engine) {
 		//	so.BroadcastTo("chat", "chat message", msg)
 		//})
 		so.On("opUrl", func(msg utils.JParam) {
-			var jo =jex.Load(msg.JsonStr)
+			var jo = jex.Load(msg.JsonStr)
 			var opUrl = jo.GetString("opUrl")
 			//model.SrvModel().OpUrlMap[opUrl] = opUrl
 
-			log.Println("opUrl",opUrl)
+			log.Println("opUrl", opUrl)
 		})
 		so.On("disconnection", func() {
 			log.Println("on disconnect")
@@ -88,13 +91,13 @@ func initWS(r *gin.Engine) {
 	})
 
 	r.GET("/socket.io/", func(c *gin.Context) {
-		server.ServeHTTP(c.Writer,c.Request)
+		server.ServeHTTP(c.Writer, c.Request)
 		//m.HandleRequest(c.Writer, c.Request)
 	})
 
 	r.GET("/cmd/:cmdId", func(c *gin.Context) {
 		cmdId := c.Param("cmdId")
-		log.Println(cmdId,c.Request.Body)
+		log.Println(cmdId, c.Request.Body)
 	})
 
 	r.POST("/cmd/:cmdId", func(c *gin.Context) {
@@ -104,8 +107,8 @@ func initWS(r *gin.Engine) {
 		var b = jo.GetBool("bool")
 		var n = jo.GetNumber("num")
 		var s = jo.GetString("string")
-		log.Println("PostForm",b,s,n)
+		log.Println("PostForm", b, s, n)
 
-		c.String(200,"ok")
+		c.String(200, "ok")
 	})
 }

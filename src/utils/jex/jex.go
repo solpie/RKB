@@ -102,6 +102,13 @@ func (jex *JsonEx)Load(param  interface{}) *JsonEx {
 	}
 	return jex
 }
+func (jex *JsonEx)LoadFile(path string) *JsonEx {
+	jex.ctn, _ = gabs.ParseJSONFile(path)
+	return jex
+}
 func Load(param  interface{}) *JsonEx {
 	return new(JsonEx).Load(param)
+}
+func LoadFile(path string) *JsonEx {
+	return new(JsonEx).LoadFile(path)
 }

@@ -2,7 +2,7 @@ package server
 
 import (
 	"testing"
-	"utils/godb"
+	_ "utils/godb"
 )
 
 func Testmain(t *testing.T) {

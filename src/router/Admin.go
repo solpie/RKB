@@ -39,6 +39,10 @@ func setupAdminCmd(r *gin.Engine) {
 		default:
 			fmt.Println("unknown cmd", cmd)
 		}
+
+		//fmt.Println("cmd", cmd)
+		//var jo = jex.Load(`{"opUrlArr":["22","11"]}`)
+		//c.JSON(200, jo.Data())
 	})
 }
 

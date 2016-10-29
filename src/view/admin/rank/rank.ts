@@ -34,7 +34,7 @@ export var RankView = {
             left: {name: "player3", score: 1},
             right: {name: "player1", score: 2}
         }];
-        var gameIdArr = [23, 21, 22, 39];
+        var gameIdArr = [23, 21, 22, 29, 39, 52];
         var gameDataArr = [];
         var gameId;
         var getGameData = (i)=> {
